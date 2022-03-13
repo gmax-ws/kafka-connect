@@ -11,7 +11,7 @@ cwd=$(pwd)
 plugin_path="$cwd/quickstart/jars"
 
 function create_cluster() {
-  doker rm -f zookeeper
+  docker rm -f zookeeper
   docker run -d \
     --net=host \
     --name=zookeeper \
@@ -53,10 +53,10 @@ function mysql() {
     mysql
 }
 
-function mysl_data() {
+function mysql_data() {
+  docker cp data.sh quickstart-mysql:/data.sh
   docker cp "$1" quickstart-mysql:/tmp/"$1"
-  docker exec -it quickstart-mysql mysql -u confluent -pconfluent 
-  #"source /tmp/$1"
+  docker exec -it quickstart-mysql /bin/bash /data.sh "$1"
 }
 
 # https://docs.confluent.io/5.0.0/installation/docker/docs/installation/connect-avro-jdbc.html
@@ -89,7 +89,7 @@ function kafka_connect_avro() {
     --name=kafka-connect-avro \
     --net=host \
     -e CONNECT_BOOTSTRAP_SERVERS=localhost:29092 \
-    -e CONNECT_REST_PORT=28083 \
+    -e CONNECT_REST_PORT=8083 \
     -e CONNECT_GROUP_ID="quickstart-avro" \
     -e CONNECT_CONFIG_STORAGE_TOPIC="quickstart-avro-config" \
     -e CONNECT_OFFSET_STORAGE_TOPIC="quickstart-avro-offsets" \
@@ -163,11 +163,26 @@ function kafka_ui() {
 	provectuslabs/kafka-ui:latest 
 }
 
-# docker rm -f $(docker ps -qa)
-# create_cluster
-# create_topics
-# mysql
+function main() {
+  prepare "mysql-connector-java-5.1.49.zip"
+  
+  create_cluster
+  
+  if $1
+  then
+    create_topics_avro
+    kafka_connect_avro
+  else
+    create_topics
+    kafka_connect
+  fi
+
+  kafka_ui
+  
+  mysql
+}
+
+avro=false
+docker rm -f $(docker ps -qa)
+main $avro
 # mysql_data "data.sql"
-prepare "mysql-connector-java-5.1.49.zip"
-# kafka_connect
-# kafka_ui
