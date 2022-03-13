@@ -77,7 +77,7 @@ function kafka_connect() {
     -e CONNECT_INTERNAL_KEY_CONVERTER="org.apache.kafka.connect.json.JsonConverter" \
     -e CONNECT_INTERNAL_VALUE_CONVERTER="org.apache.kafka.connect.json.JsonConverter" \
     -e CONNECT_REST_ADVERTISED_HOST_NAME="localhost" \
-    -e CONNECT_PLUGIN_PATH=/usr/share/java,/etc/kafka-connect/jars \
+    -e CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/filestream-connectors,/etc/kafka-connect/jars \
     -v "$plugins_path/file":/tmp/quickstart \
     -v "$plugins_path/jars":/etc/kafka-connect/jars \
     "$img_kafka_connect"
@@ -105,7 +105,7 @@ function kafka_connect_avro() {
     -e CONNECT_INTERNAL_VALUE_CONVERTER="org.apache.kafka.connect.json.JsonConverter" \
     -e CONNECT_REST_ADVERTISED_HOST_NAME="localhost" \
     -e CONNECT_LOG4J_ROOT_LOGLEVEL=DEBUG \
-    -e CONNECT_PLUGIN_PATH=/usr/share/java,/etc/kafka-connect/jars \
+    -e CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/filestream-connectors,/etc/kafka-connect/jars \
     -v "$plugins_path/file":/tmp/quickstart \
     -v "$plugins_path/jars":/etc/kafka-connect/jars \
     "$img_kafka_connect"
@@ -161,6 +161,7 @@ function kafka_ui() {
 }
 
 function main() {
+  docker rm -f $(docker ps -qa)
   prepare "mysql-connector-java-5.1.49.zip"
   
   create_cluster
@@ -180,6 +181,5 @@ function main() {
 }
 
 avro=false
-docker rm -f $(docker ps -qa)
 main $avro
 # mysql_data "data.sql"
