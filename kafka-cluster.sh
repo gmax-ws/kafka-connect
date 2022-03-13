@@ -140,10 +140,12 @@ function create_topics_avro() {
 }
 
 function prepare() {
+  plug="confluentinc-kafka-connect-jdbc-10.3.3.zip"
   mkdir -p "$plugin_path"
   rm -r "$plugin_path"
-  wget -O "http://dev.mysql.com/get/Downloads/Connector-J/$1"
+  wget -O "$1" "http://dev.mysql.com/get/Downloads/Connector-J/$1"
   unzip "$1" -d "$plugin_path"
+  wget -O "$plug" "https://d1i4a15mxbxib1.cloudfront.net/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.3.3/$plug"
   unzip confluentinc-kafka-connect-jdbc-10.3.3.zip -d "$plugin_path"
 }
 
@@ -166,6 +168,6 @@ function kafka_ui() {
 # create_topics
 # mysql
 # mysql_data "data.sql"
-# prepare "mysql-connector-java-5.1.49.zip"
+prepare "mysql-connector-java-5.1.49.zip"
 # kafka_connect
-kafka_ui
+# kafka_ui
