@@ -8,7 +8,7 @@ img_schema_reistry="confluentinc/cp-schema-registry:$version"
 img_kafka_connect="confluentinc/cp-kafka-connect:$version"
 
 cwd=$(pwd)
-plugin_path="$cwd/quickstart/jars"
+plugins_path="$cwd/quickstart"
 
 function create_cluster() {
   docker rm -f zookeeper
@@ -78,8 +78,8 @@ function kafka_connect() {
     -e CONNECT_INTERNAL_VALUE_CONVERTER="org.apache.kafka.connect.json.JsonConverter" \
     -e CONNECT_REST_ADVERTISED_HOST_NAME="localhost" \
     -e CONNECT_PLUGIN_PATH=/usr/share/java,/etc/kafka-connect/jars \
-    -v /tmp/quickstart/file:/tmp/quickstart \
-    -v /tmp/quickstart/jars:/etc/kafka-connect/jars \
+    -v "$plugins_path/file":/tmp/quickstart \
+    -v "$plugins_path/jars":/etc/kafka-connect/jars \
     "$img_kafka_connect"
 }
 
@@ -106,8 +106,8 @@ function kafka_connect_avro() {
     -e CONNECT_REST_ADVERTISED_HOST_NAME="localhost" \
     -e CONNECT_LOG4J_ROOT_LOGLEVEL=DEBUG \
     -e CONNECT_PLUGIN_PATH=/usr/share/java,/etc/kafka-connect/jars \
-    -v /tmp/quickstart/file:/tmp/quickstart \
-    -v /tmp/quickstart/jars:/etc/kafka-connect/jars \
+    -v "$plugins_path/file":/tmp/quickstart \
+    -v "$plugins_path/jars":/etc/kafka-connect/jars \
     "$img_kafka_connect"
 }
 
@@ -140,13 +140,10 @@ function create_topics_avro() {
 }
 
 function prepare() {
-  plug="confluentinc-kafka-connect-jdbc-10.3.3.zip"
-  mkdir -p "$plugin_path"
-  rm -r "$plugin_path"
-  wget -O "$1" "http://dev.mysql.com/get/Downloads/Connector-J/$1"
-  unzip "$1" -d "$plugin_path"
-  wget -O "$plug" "https://d1i4a15mxbxib1.cloudfront.net/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.3.3/$plug"
-  unzip confluentinc-kafka-connect-jdbc-10.3.3.zip -d "$plugin_path"
+  jdbc_plugin="confluentinc-kafka-connect-jdbc-10.3.3.zip"
+  mkdir -p "$plugins_path/file" && mkdir -p "$plugins_path/jars" && rm -r "$plugins_path/jars"
+  wget -O "$1" "http://dev.mysql.com/get/Downloads/Connector-J/$1" && unzip "$1" -d "$plugins_path/jars"
+  wget -O "$jdbc_plugin" "https://d1i4a15mxbxib1.cloudfront.net/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.3.3/$jdbc_plugin" && unzip confluentinc-kafka-connect-jdbc-10.3.3.zip -d "$plugins_path/jars"
 }
 
 function kafka_ui() {
