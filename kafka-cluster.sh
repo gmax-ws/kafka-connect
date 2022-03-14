@@ -54,9 +54,8 @@ function mysql() {
 }
 
 function mysql_data() {
-  docker cp data.sh quickstart-mysql:/data.sh
   docker cp "$1" quickstart-mysql:/tmp/"$1"
-  docker exec -it quickstart-mysql /bin/bash /data.sh "$1"
+  docker exec -it quickstart-mysql /bin/bash -c "mysql -u confluent -pconfluent connect_test < /tmp/$1"
 }
 
 # https://docs.confluent.io/5.0.0/installation/docker/docs/installation/connect-avro-jdbc.html
