@@ -140,10 +140,10 @@ function create_topics_avro() {
 }
 
 function prepare() {
-  jdbc_plugin="confluentinc-kafka-connect-jdbc-10.3.3.zip"
-  mkdir -p "$plugins_path/file" && mkdir -p "$plugins_path/jars" && rm -r "$plugins_path/jars"
-  wget -O "$1" "http://dev.mysql.com/get/Downloads/Connector-J/$1" && unzip "$1" -d "$plugins_path/jars"
-  wget -O "$jdbc_plugin" "https://d1i4a15mxbxib1.cloudfront.net/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.3.3/$jdbc_plugin" && unzip confluentinc-kafka-connect-jdbc-10.3.3.zip -d "$plugins_path/jars"
+  jdbc_plugin="confluentinc-kafka-connect-jdbc-10.3.3"
+  mkdir -p "$plugins_path/file" && mkdir -p "$plugins_path/jars" && rm -r "$plugins_path/jars" && rm -r "$plugins_path/file"
+  wget -O "$jdbc_plugin.zip" "https://d1i4a15mxbxib1.cloudfront.net/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.3.3/$jdbc_plugin.zip" && unzip "$jdbc_plugin.zip" -d "$plugins_path/jars"
+  wget -O "$1.zip" "http://dev.mysql.com/get/Downloads/Connector-J/$1.zip" && unzip -j "$1" "$1/$1.jar" -d "$plugins_path/jars/$jdbc_plugin/lib"
 }
 
 function kafka_ui() {
@@ -155,6 +155,7 @@ function kafka_ui() {
 	-e KAFKA_CLUSTERS_0_NAME=local \
 	-e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=localhost:29092 \
   -e KAFKA_CLUSTERS_0_ZOOKEEPER=localhost:32181 \
+  -e KAFKA_CLUSTERS_0_SCHEMAREGISTRY=http://localhost:8081 \
   -e KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME=kafka-connect \
   -e KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS=http://localhost:8083 \
 	provectuslabs/kafka-ui:latest 
@@ -162,7 +163,7 @@ function kafka_ui() {
 
 function main() {
   docker rm -f $(docker ps -qa)
-  prepare "mysql-connector-java-5.1.49.zip"
+  prepare "mysql-connector-java-5.1.49"
   
   create_cluster
   
@@ -182,4 +183,4 @@ function main() {
 
 avro=false
 main $avro
-# mysql_data "data.sql"
+#mysql_data "data.sql"
