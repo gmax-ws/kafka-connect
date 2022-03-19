@@ -41,19 +41,19 @@ services:
     environment:
     - CONNECT_BOOTSTRAP_SERVERS=localhost:29092
     - CONNECT_REST_PORT=8083
-    - CONNECT_GROUP_ID="quickstart"
-    - CONNECT_CONFIG_STORAGE_TOPIC="quickstart-config"
-    - CONNECT_OFFSET_STORAGE_TOPIC="quickstart-offsets"
-    - CONNECT_STATUS_STORAGE_TOPIC="quickstart-status"
-    - CONNECT_KEY_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-    - CONNECT_VALUE_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-    - CONNECT_INTERNAL_KEY_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-    - CONNECT_INTERNAL_VALUE_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-    - CONNECT_REST_ADVERTISED_HOST_NAME="localhost"
-    - CONNECT_PLUGIN_PATH="/usr/share/java,/usr/share/filestream-connectors,/etc/kafka-connect/jars"
+    - CONNECT_GROUP_ID=quickstart
+    - CONNECT_CONFIG_STORAGE_TOPIC=quickstart-config
+    - CONNECT_OFFSET_STORAGE_TOPIC=quickstart-offsets
+    - CONNECT_STATUS_STORAGE_TOPIC=quickstart-status
+    - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+    - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+    - CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+    - CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+    - CONNECT_REST_ADVERTISED_HOST_NAME=localhost
+    - CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/filestream-connectors,/etc/kafka-connect/jars
     volumes:
-      - /tmp/quickstart/file:/tmp/quickstart
-      - /tmp/quickstart/jars:/etc/kafka-connect/jars
+      - ./quickstart/file:/tmp/quickstart
+      - ./quickstart/jars:/etc/kafka-connect/jars
     depends_on:
       - kafka
 
@@ -64,25 +64,25 @@ services:
      environment:
        - CONNECT_BOOTSTRAP_SERVERS=localhost:29092
        - CONNECT_REST_PORT=8082
-       - CONNECT_GROUP_ID="quickstart-avro"
-       - CONNECT_CONFIG_STORAGE_TOPIC="quickstart-avro-config"
-       - CONNECT_OFFSET_STORAGE_TOPIC="quickstart-avro-offsets"
-       - CONNECT_STATUS_STORAGE_TOPIC="quickstart-avro-status"
+       - CONNECT_GROUP_ID=quickstart-avro
+       - CONNECT_CONFIG_STORAGE_TOPIC=quickstart-avro-config
+       - CONNECT_OFFSET_STORAGE_TOPIC=quickstart-avro-offsets
+       - CONNECT_STATUS_STORAGE_TOPIC=quickstart-avro-status
        - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
        - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
        - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
-       - CONNECT_KEY_CONVERTER="io.confluent.connect.avro.AvroConverter"
-       - CONNECT_VALUE_CONVERTER="io.confluent.connect.avro.AvroConverter"
-       - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL="http://localhost:8081"
-       - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL="http://localhost:8081"
-       - CONNECT_INTERNAL_KEY_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-       - CONNECT_INTERNAL_VALUE_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-       - CONNECT_REST_ADVERTISED_HOST_NAME="localhost"
+       - CONNECT_KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
+       - CONNECT_VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
+       - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://localhost:8081
+       - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://localhost:8081
+       - CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+       - CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+       - CONNECT_REST_ADVERTISED_HOST_NAME=localhost
        - CONNECT_LOG4J_ROOT_LOGLEVEL=DEBUG
-       - CONNECT_PLUGIN_PATH="/usr/share/java,/usr/share/filestream-connectors,/etc/kafka-connect/jars"
+       - CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/filestream-connectors,/etc/kafka-connect/jars
      volumes:
-       - /tmp/quickstart/file:/tmp/quickstart
-       - /tmp/quickstart/jars:/etc/kafka-connect/jars
+       - ./quickstart/file:/tmp/quickstart
+       - ./quickstart/jars:/etc/kafka-connect/jars
      depends_on:
        - kafka
 

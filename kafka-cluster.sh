@@ -3,7 +3,8 @@
 version="7.0.1"
 img_kafka="confluentinc/cp-kafka:$version"
 
-plugins_path="/tmp/quickstart"
+cwd=$(pwd)
+plugins_path="$cwd/quickstart"
 
 function mysql_data() {
   docker cp "$1" quickstart-mysql:/tmp/"$1"
