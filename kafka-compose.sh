@@ -50,22 +50,30 @@ function prepare() {
 while :; do
   echo "Your working directory is:" && pwd
   PS3="Please enter your choice: "
-  options=("Prepare" "Deploy" "Topics" "MySQL Data" "Quit")
+  options=("Init" "Prepare" "Deploy" "Deploy avro" "Topics" "MySQL Data" "Quit")
   select opt in "${options[@]}"; do
     case $opt in
-    "Prepare")
+    "Init")
       # shellcheck disable=SC2046
       docker rm -f $(docker ps -qa)
+      break
+      ;;
+    "Prepare")
+      # shellcheck disable=SC2046
       prepare "mysql-connector-java-5.1.49"
       break
       ;;
     "Deploy")
       docker-compose up -d
+      create_topics
+      break
+      ;;
+    "Deploy avro")
+      docker-compose -f docker-compose-avro.yaml up -d
+      create_topics_avro
       break
       ;;
     "Topics")
-      create_topics_avro
-      create_topics
       describe
       break
       ;;
