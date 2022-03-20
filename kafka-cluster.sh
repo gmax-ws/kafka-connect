@@ -160,26 +160,49 @@ function kafka_ui() {
 	provectuslabs/kafka-ui:latest 
 }
 
-function main() {
-  docker rm -f $(docker ps -qa)
-  prepare "mysql-connector-java-5.1.49"
-  
-  create_cluster
-  
-  if $1
-  then
-    create_topics_avro
-    kafka_connect_avro
-  else
-    create_topics
-    kafka_connect
-  fi
-
-  kafka_ui
-  
-  mysql
-}
-
-avro=false
-main $avro
-#mysql_data "data.sql"
+while :; do
+  echo "Your working directory is:" && pwd
+  PS3="Please enter your choice: "
+  options=("Init" "Prepare" "Deploy" "Topics" "MySQL Data" "Quit")
+  select opt in "${options[@]}"; do
+    case $opt in
+    "Init")
+      # shellcheck disable=SC2046
+      docker rm -f $(docker ps -qa)
+      break
+      ;;
+    "Prepare")
+      # shellcheck disable=SC2046
+      prepare "mysql-connector-java-5.1.49"
+      break
+      ;;
+    "Deploy")
+      create_cluster
+      if [ "$1" = "avro" ]; then
+        echo "avro..."
+        create_topics_avro
+        kafka_connect_avro
+      else
+        echo "json..."
+        create_topics
+        kafka_connect
+      fi
+      mysql
+      kafka_ui
+      break
+      ;;
+    "Topics")
+      describe
+      break
+      ;;
+    "MySQL Data")
+      mysql_data "data.sql"
+      break
+      ;;
+    "Quit")
+      break 2
+      ;;
+    *) echo "Invalid option, please select a valid one." ;;
+    esac
+  done
+done

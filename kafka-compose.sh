@@ -50,7 +50,7 @@ function prepare() {
 while :; do
   echo "Your working directory is:" && pwd
   PS3="Please enter your choice: "
-  options=("Init" "Prepare" "Deploy" "Deploy avro" "Topics" "MySQL Data" "Quit")
+  options=("Init" "Prepare" "Deploy" "Topics" "MySQL Data" "Quit")
   select opt in "${options[@]}"; do
     case $opt in
     "Init")
@@ -64,13 +64,17 @@ while :; do
       break
       ;;
     "Deploy")
-      docker-compose up -d
-      create_topics
-      break
-      ;;
-    "Deploy avro")
-      docker-compose -f docker-compose-avro.yaml up -d
-      create_topics_avro
+      if [ "$1" = "avro" ]; then
+        echo "avro..."
+        docker-compose -f docker-compose-avro.yaml up -d
+        create_topics_avro
+      else
+        echo "json..."
+        docker-compose up -d
+        create_topics
+      fi
+      mysql
+      kafka_ui
       break
       ;;
     "Topics")
